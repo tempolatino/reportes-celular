@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Celulares">
+<meta name="theme-color" content="#1f2d6b">
+<meta name="robots" content="noindex, nofollow">
+<title>Reportes de celular</title>
+<link rel="icon" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+<style>
+:root{
+  --acc:#1f2d6b; --bg:#e8eded; --card:#fff; --ink:#12262b; --mut:#587074; --pri:#1f2d6b; --line:#cad6d7;
+  --n1:#f0b400; --n2:#e06a1b; --n3:#b3261e; --n4:#3b0d11;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+body.busy{cursor:progress}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #1b8aa6;outline-offset:2px}
+main{max-width:640px;margin:0 auto;padding:12px 14px 96px}
+.bar{display:flex;align-items:center;gap:10px;background:var(--pri);color:#fff;padding:10px 14px;position:sticky;top:0;z-index:5}
+.bar h1{margin:0;font-size:1.05rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar img{width:34px;height:34px;border-radius:50%;background:#fff}
+.login img{width:132px;height:132px;border-radius:50%;margin-bottom:10px}
+.bar .ghost{color:#fff;border-color:#ffffff66}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer}
+.btn.full{width:100%}
+.fab{background:var(--acc)}
+.ghost{background:transparent;border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+.ghost.sm{padding:6px 10px;font-size:.9rem}
+.err{color:var(--n3);font-weight:600;min-height:1.4em}
+.login{max-width:360px;margin:12vh auto 0;padding:0 18px;text-align:center}
+.login h1{font-size:1.6rem;margin:0 0 4px}
+.login p{color:var(--mut);margin:0 0 18px}
+.login input{width:100%;font-size:2rem;letter-spacing:.5em;text-align:center;padding:12px;border:2px solid var(--line);border-radius:12px;margin-bottom:12px}
+h2.g{font-size:.95rem;margin:18px 2px 6px;color:var(--mut)}
+.tiles{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:10px;aspect-ratio:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;font-size:1.25rem;font-weight:800;cursor:pointer;padding:0}
+.tile .bd{font-size:.72rem;font-weight:700;color:#fff;border-radius:99px;min-width:1.5em;padding:0 6px;line-height:1.5em}
+.tile .bd.none{visibility:hidden}
+.n1{background:var(--n1)} .n2{background:var(--n2)} .n3{background:var(--n3)} .n4{background:var(--n4)}
+.bd.n1{color:#2a2000}
+.aviso{background:#fff3cd;border:1px solid #e6c55a;border-radius:10px;padding:10px 12px;margin:10px 0;display:flex;gap:10px;align-items:flex-start}
+.aviso span{flex:1}
+.al{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:8px 0}
+.al summary{display:flex;align-items:center;gap:10px;padding:12px;cursor:pointer;list-style:none}
+.al summary::-webkit-details-marker{display:none}
+.nm{flex:1;font-weight:700}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:3px 10px 3px 4px;color:#fff;font-size:.85rem;font-weight:600}
+.chip b{background:#ffffff33;border-radius:99px;min-width:1.6em;text-align:center;padding:0 4px}
+.chip.n1{color:#2a2000}
+.chip.n1 b{background:#00000022}
+.det{padding:0 12px 12px;border-top:1px solid var(--line)}
+.rule{margin:10px 0;font-weight:600}
+.det ul{list-style:none;margin:0;padding:0}
+.det li{padding:8px 0;border-bottom:1px dashed var(--line)}
+.sub{color:var(--mut);font-size:.92rem}
+.tg{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 10px;margin:6px 6px 0 0;font-size:.85rem;cursor:pointer}
+.tg.on{background:#d8efe0;border-color:#79b98e}
+.tg.del{color:var(--n3)}
+.ok{font-size:.85rem;margin:6px 6px 0 0;display:inline-block;color:#1d6b3a;font-weight:600}
+.empty{color:var(--mut);text-align:center;padding:36px 12px}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));box-shadow:0 4px 14px #0004;padding:14px 26px}
+.sheet{position:fixed;inset:0;background:#0008;z-index:10;display:flex;align-items:flex-end;justify-content:center}
+.sheet form{background:#fff;width:100%;max-width:640px;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:90vh;overflow:auto}
+.sheet h2{margin:0 0 8px;font-size:1.1rem}
+label{display:block;font-weight:600;margin:10px 0}
+label input,label select{display:block;width:100%;margin-top:4px;padding:11px;border:1px solid var(--line);border-radius:10px;font-weight:400;background:#fff}
+label.chk{display:flex;gap:8px;align-items:center}
+label.chk input{width:auto;margin:0}
+.row{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+.usr{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;display:flex;align-items:center;gap:10px}
+.usr .nm{font-weight:700}
+.usr small{color:var(--mut);display:block;font-weight:400}
+.usr.off{opacity:.55}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* Pega aquí la URL de la aplicación web de Apps Script (termina en /exec) */
+const API_URL = "https://script.google.com/macros/s/AKfycbw6yTO1TKdznl1LeP5AyfjpHsUo9p27uMu_0ObD75l5E4iYa29-7ghnG_YlEE59txE/exec";
+
+const TURNO = "M"; /* M = matutino, V = vespertino */
+const TURNO_TXT = TURNO === "V" ? "Turno vespertino" : "Turno matutino";
+const GRADOS = [1, 2, 3], LETRAS = (TURNO === "V" ? "HIJKL" : "ABCDEFG").split("");
+document.title = "Reportes de celular, " + TURNO_TXT.toLowerCase();
+const LUGARES = ["Clase", "Receso", "Pasillo / otro"];
+const NIV = {
+  1: { t: "Atención", c: "n1", d: "Llamada de atención. No se retira el celular." },
+  2: { t: "Reincidente", c: "n2", d: "Retirar el celular y llevarlo a Dirección. Dirección llama a papá y firman el documento de reincidente." },
+  3: { t: "Tercera vez", c: "n3", d: "Retirar el celular y llevarlo a Dirección. Papá firma que, si reincide, se retira el resto del ciclo." },
+  4: { t: "Retiro del ciclo", c: "n4", d: "Se retira el celular el resto del ciclo escolar." }
+};
+const lv = n => NIV[Math.min(n, 4)];
+
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const store = {
+  get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} },
+  del(k) { try { sessionStorage.removeItem(k); } catch (e) {} }
+};
+let token = store.get("t" + TURNO);
+let me = null;
+try { me = JSON.parse(store.get("me" + TURNO) || "null"); } catch (e) {}
+let aviso = "";
+
+const isAdmin = () => me && me.rol === "admin";
+
+async function api(action, data) {
+  document.body.classList.add("busy");
+  try {
+    let r;
+    try {
+      r = await fetch(API_URL, { method: "POST", body: JSON.stringify(Object.assign({ action: action, token: token }, data || {})) });
+    } catch (e) {
+      throw new Error("Sin conexión. Revisa tu internet e inténtalo otra vez.");
+    }
+    let j;
+    try { j = await r.json(); } catch (e) { throw new Error("El servidor no respondió bien. Inténtalo otra vez."); }
+    if (!j.ok) {
+      if (j.auth) { salirLocal(); }
+      throw new Error(j.error || "Error desconocido.");
+    }
+    return j;
+  } finally {
+    document.body.classList.remove("busy");
+  }
+}
+
+function salirLocal() { token = null; me = null; store.del("t" + TURNO); store.del("me" + TURNO); }
+async function salir() { try { await api("logout"); } catch (e) {} salirLocal(); login(); }
+
+/* ---------- Login ---------- */
+function login(msg) {
+  app.innerHTML = `<main class="login">
+    <img src="logo.jpg" alt="Escuela Secundaria Técnica No. 1, Guerreros">
+    <h1>Reportes de celular</h1>
+    <p>Secundaria Técnica No. 1, ${TURNO_TXT.toLowerCase()}. Escribe tu PIN para entrar.</p>
+    <input id="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="8" aria-label="PIN">
+    <button class="btn full" id="go">Entrar</button>
+    <p class="err" id="err" role="alert">${esc(msg || "")}</p></main>`;
+  const pin = document.getElementById("pin"), err = document.getElementById("err");
+  pin.focus();
+  const go = async () => {
+    err.textContent = "";
+    if (pin.value.length < 4) { err.textContent = "El PIN tiene al menos 4 números."; return; }
+    try {
+      const j = await api("login", { pin: pin.value, turno: TURNO });
+      token = j.token; me = j.user;
+      store.set("t" + TURNO, token); store.set("me" + TURNO, JSON.stringify(me));
+      home();
+    } catch (e) { err.textContent = e.message; pin.value = ""; }
+  };
+  document.getElementById("go").onclick = go;
+  pin.onkeydown = e => { if (e.key === "Enter") go(); };
+}
+
+/* ---------- Barra superior ---------- */
+function bar(title, back) {
+  return `<header class="bar"><img src="logo.jpg" alt="">
+    ${back ? `<button class="ghost" data-act="home">Grupos</button>` : ""}
+    <h1>${esc(title)}</h1>
+    ${!back && isAdmin() ? `<button class="ghost" data-act="admin">Maestros</button>` : ""}
+    <button class="ghost" data-act="salir">Salir</button></header>`;
+}
+
+/* ---------- Inicio: grupos ---------- */
+async function home() {
+  aviso = "";
+  app.innerHTML = bar("Hola, " + (me ? me.nombre : ""), false) + `<main><p class="empty">Cargando…</p></main>`;
+  let res;
+  try { res = (await api("resumen", { turno: TURNO })).grupos; } catch (e) { if (!token) return login(e.message); app.querySelector("main").innerHTML = `<p class="err">${esc(e.message)}</p>`; return; }
+  const filas = GRADOS.map(g => `<h2 class="g">${g}.º grado</h2><div class="tiles" style="grid-template-columns:repeat(${LETRAS.length},1fr)">` + LETRAS.map(l => {
+    const id = g + l, r = res[id];
+    return `<button class="tile" data-g="${id}" aria-label="Grupo ${id}${r ? ", " + r.n + " con reporte" : ""}">${id}<span class="bd ${r ? lv(r.max).c : "none"}">${r ? r.n : 0}</span></button>`;
+  }).join("") + `</div>`).join("");
+  app.innerHTML = bar("Hola, " + me.nombre, false) + `<main><p class="sub"><b>${TURNO_TXT}</b></p>${filas}<p class="sub" style="margin-top:18px">El número es cuántos alumnos del grupo tienen reporte. El color es el nivel más alto del grupo.</p></main>`;
+}
+
+/* ---------- Grupo ---------- */
+function repHtml(r, i) {
+  const f = new Date(r.fecha).toLocaleString("es-MX", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  let flags = "";
+  if (i >= 1) {
+    flags = isAdmin()
+      ? `<div><button class="tg ${r.notificado ? "on" : ""}" data-id="${r.id}" data-campo="notificado" data-v="${r.notificado ? 0 : 1}">Papá notificado</button>
+         <button class="tg ${r.firmo ? "on" : ""}" data-id="${r.id}" data-campo="firmo" data-v="${r.firmo ? 0 : 1}">Firmó documento</button></div>`
+      : `<div>${r.notificado ? '<span class="ok">Papá notificado</span>' : ""}${r.firmo ? '<span class="ok">Firmó documento</span>' : ""}</div>`;
+  }
+  const del = isAdmin() ? `<button class="tg del" data-del="${r.id}">Borrar reporte</button>` : "";
+  return `<li><div><b>${esc(f)}</b>, ${esc(r.lugar)}</div>
+    <div class="sub">Reportó ${esc(r.docente)}${r.nota ? ": " + esc(r.nota) : ""}</div>${flags}${del}</li>`;
+}
+
+let grupoActual = "", alumnosActual = [];
+
+async function verGrupo(g, abiertos) {
+  grupoActual = g;
+  app.innerHTML = bar("Grupo " + g, true) + `<main><p class="empty">Cargando…</p></main>`;
+  try {
+    alumnosActual = (await api("grupo", { grupo: g })).alumnos;
+  } catch (e) { if (!token) return login(e.message); app.querySelector("main").innerHTML = `<p class="err">${esc(e.message)}</p>`; return; }
+  const lista = alumnosActual.length ? alumnosActual.map(a => {
+    const l = lv(a.reportes.length);
+    return `<details class="al" data-k="${esc(a.key)}" ${abiertos && abiertos.includes(a.key) ? "open" : ""}>
+      <summary><span class="nm">${esc(a.alumno)}</span><span class="chip ${l.c}"><b>${a.reportes.length}</b>${l.t}</span></summary>
+      <div class="det"><p class="rule">${l.d}</p><ul>${a.reportes.map(repHtml).join("")}</ul>
+      ${isAdmin() ? `<button class="ghost sm" data-ren="${esc(a.key)}" data-nom="${esc(a.alumno)}">Corregir nombre</button>` : ""}</div></details>`;
+  }).join("") : `<p class="empty">Ningún alumno de ${g} tiene reportes.</p>`;
+  app.innerHTML = bar("Grupo " + g, true) + `<main>
+    ${aviso ? `<div class="aviso"><span>${aviso}</span><button class="ghost sm" data-act="cerrar-aviso">Cerrar</button></div>` : ""}
+    ${lista}</main><button class="btn fab" data-act="nuevo">Registrar reporte</button>`;
+}
+
+function formReporte() {
+  const sheet = document.createElement("div");
+  sheet.className = "sheet";
+  sheet.innerHTML = `<form><h2>Registrar reporte en ${grupoActual}</h2>
+    <label>Alumno<input id="al" list="dl" autocomplete="off" placeholder="Nombre y apellido"></label>
+    <datalist id="dl">${alumnosActual.map(a => `<option value="${esc(a.alumno)}">`).join("")}</datalist>
+    <label>Dónde pasó<select id="lu">${LUGARES.map(l => `<option>${l}</option>`).join("")}</select></label>
+    <label>Nota (opcional)<input id="no" maxlength="200" autocomplete="off"></label>
+    <p class="err" id="fe" role="alert"></p>
+    <div class="row"><button type="button" class="ghost" id="cx">Cancelar</button><button class="btn" id="sv">Guardar reporte</button></div></form>`;
+  document.body.appendChild(sheet);
+  const q = s => sheet.querySelector(s);
+  q("#al").focus();
+  q("#cx").onclick = () => sheet.remove();
+  sheet.onclick = e => { if (e.target === sheet) sheet.remove(); };
+  q("form").onsubmit = async e => {
+    e.preventDefault();
+    q("#fe").textContent = "";
+    q("#sv").disabled = true;
+    try {
+      const j = await api("agregar", { grupo: grupoActual, alumno: q("#al").value, lugar: q("#lu").value, nota: q("#no").value });
+      sheet.remove();
+      aviso = `<b>${esc(j.alumno)}</b> lleva ${j.count} ${j.count === 1 ? "reporte" : "reportes"}. ${esc(lv(j.count).d)}`;
+      verGrupo(grupoActual);
+    } catch (er) { q("#fe").textContent = er.message; q("#sv").disabled = false; }
+  };
+}
+
+/* ---------- Administración de maestros ---------- */
+async function admin() {
+  app.innerHTML = bar("Maestros", true) + `<main><p class="empty">Cargando…</p></main>`;
+  let us;
+  try { us = (await api("usuarios")).usuarios; } catch (e) { if (!token) return login(e.message); app.querySelector("main").innerHTML = `<p class="err">${esc(e.message)}</p>`; return; }
+  app.innerHTML = bar("Maestros", true) + `<main>
+    ${us.map(u => `<div class="usr ${u.activo ? "" : "off"}"><div class="nm">${esc(u.nombre)}<small>${u.rol === "admin" ? "Administrador" : "Maestro"}, ${u.turnos === "MV" ? "ambos turnos" : u.turnos === "V" ? "vespertino" : "matutino"}${u.activo ? "" : ", sin acceso"}</small></div>
+      <button class="ghost sm" data-edit='${esc(JSON.stringify(u))}'>Editar</button></div>`).join("")}
+    </main><button class="btn fab" data-act="nuevo-usr">Agregar maestro</button>`;
+}
+
+function formUsuario(u) {
+  u = u || { nombre: "", rol: "maestro", activo: true, turnos: TURNO };
+  const sheet = document.createElement("div");
+  sheet.className = "sheet";
+  sheet.innerHTML = `<form><h2>${u.id ? "Editar maestro" : "Agregar maestro"}</h2>
+    <label>Nombre<input id="un" value="${esc(u.nombre)}" autocomplete="off"></label>
+    <label>Rol<select id="ur"><option value="maestro" ${u.rol === "maestro" ? "selected" : ""}>Maestro</option><option value="admin" ${u.rol === "admin" ? "selected" : ""}>Administrador</option></select></label>
+    <label class="chk"><input type="checkbox" id="tm" ${u.turnos.includes("M") ? "checked" : ""}>Turno matutino</label>
+    <label class="chk"><input type="checkbox" id="tv" ${u.turnos.includes("V") ? "checked" : ""}>Turno vespertino</label>
+    <label>PIN (4 a 8 números)<input id="up" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="${u.id ? "Vacío para no cambiarlo" : "Ej. 482915"}"></label>
+    <label class="chk"><input type="checkbox" id="ua" ${u.activo ? "checked" : ""}>Tiene acceso</label>
+    <p class="err" id="fe" role="alert"></p>
+    <div class="row"><button type="button" class="ghost" id="cx">Cancelar</button><button class="btn" id="sv">Guardar</button></div></form>`;
+  document.body.appendChild(sheet);
+  const q = s => sheet.querySelector(s);
+  q("#un").focus();
+  q("#cx").onclick = () => sheet.remove();
+  q("form").onsubmit = async e => {
+    e.preventDefault();
+    q("#fe").textContent = "";
+    q("#sv").disabled = true;
+    try {
+      await api("guardarUsuario", { id: u.id, nombre: q("#un").value, rol: q("#ur").value, pin: q("#up").value, activo: q("#ua").checked, turnos: (q("#tm").checked ? "M" : "") + (q("#tv").checked ? "V" : "") });
+      sheet.remove(); admin();
+    } catch (er) { q("#fe").textContent = er.message; q("#sv").disabled = false; }
+  };
+}
+
+/* ---------- Eventos ---------- */
+app.addEventListener("click", async e => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  const abiertos = () => [...document.querySelectorAll("details[open]")].map(d => d.dataset.k);
+  try {
+    if (t.dataset.g) return verGrupo(t.dataset.g);
+    switch (t.dataset.act) {
+      case "home": return home();
+      case "salir": return salir();
+      case "admin": return admin();
+      case "nuevo": return formReporte();
+      case "nuevo-usr": return formUsuario();
+      case "cerrar-aviso": aviso = ""; return verGrupo(grupoActual, abiertos());
+    }
+    if (t.dataset.edit) return formUsuario(JSON.parse(t.dataset.edit));
+    if (t.dataset.campo) {
+      const ab = abiertos();
+      await api("marcar", { id: t.dataset.id, campo: t.dataset.campo, valor: t.dataset.v === "1" });
+      return verGrupo(grupoActual, ab);
+    }
+    if (t.dataset.del) {
+      if (!confirm("¿Borrar este reporte? El contador del alumno bajará en uno.")) return;
+      const ab = abiertos();
+      await api("borrar", { id: t.dataset.del });
+      return verGrupo(grupoActual, ab);
+    }
+    if (t.dataset.ren) {
+      const nuevo = prompt("Nombre correcto del alumno:", t.dataset.nom);
+      if (!nuevo) return;
+      await api("renombrar", { grupo: grupoActual, key: t.dataset.ren, nuevo: nuevo });
+      return verGrupo(grupoActual);
+    }
+  } catch (er) {
+    if (!token) login(er.message); else alert(er.message);
+  }
+});
+
+if (API_URL.indexOf("PEGA_AQUI") === 0) {
+  app.innerHTML = `<main><p class="err">Falta pegar la URL de Apps Script en API_URL dentro de index.html.</p></main>`;
+} else if (token && me) {
+  home();
+} else {
+  login();
+}
+</script>
+</body>
+</html>
